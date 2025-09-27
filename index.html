@@ -6,7 +6,7 @@
   <title>Planificador semanal de inglés</title>
   <style>
     :root{
-      --bg:#0b1220; /* oscuro elegante */
+      --bg:#0b1220;
       --card:#121a2b;
       --muted:#6b7a90;
       --text:#eaf1ff;
@@ -17,112 +17,62 @@
       --shadow:0 10px 30px rgba(0,0,0,.35);
       --radius:16px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system, Segoe UI, Roboto, Inter, Ubuntu, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(1200px 600px at 10% -10%, #102040 0%, transparent 50%),
-                  radial-gradient(1200px 600px at 110% 10%, #1b2a4a 0%, transparent 50%),
-                  var(--bg);
-      color:var(--text);
-      line-height:1.45;
-    }
-    header{
-      max-width:1200px; margin:24px auto 0; padding:0 16px;
-    }
-    h1{font-weight:800; letter-spacing:.3px; margin:8px 0 6px}
-    .sub{color:var(--muted); margin:0 0 14px}
-    .toolbar{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:12px 0 22px;
-    }
-    button, .btn{
-      background:linear-gradient(180deg, #1f2b45, #0f172a);
-      color:var(--text); border:1px solid var(--border);
-      padding:10px 14px; border-radius:12px; cursor:pointer;
-      box-shadow:var(--shadow); transition:.2s transform, .2s opacity;
-    }
-    button:hover{transform:translateY(-1px)}
-    button:active{transform:translateY(0)}
-    .btn-accent{background:linear-gradient(180deg, #1b3b54, #0f2136); border-color:#1c3b57}
-    .grid{
-      max-width:1200px; margin:0 auto; padding:0 16px 60px;
-      display:grid; gap:16px;
-      grid-template-columns: repeat(7, minmax(200px, 1fr));
-    }
-    @media (max-width:1100px){ .grid{grid-template-columns: repeat(3, 1fr);} }
-    @media (max-width:720px){ .grid{grid-template-columns: 1fr; } }
-
-    .day{
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-      border:1px solid var(--border); border-radius: var(--radius);
-      padding:14px; box-shadow: var(--shadow);
-      display:flex; flex-direction:column; gap:10px;
-    }
-    .day header{padding:0; margin:0; display:flex; justify-content:space-between; align-items:center}
-    .day h3{margin:0; font-size:1.05rem}
-    .badge{font-size:.75rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
-    .today{ outline:2px solid var(--accent); box-shadow: 0 0 0 4px rgba(76,201,240,.15), var(--shadow); }
-
+    body{margin:0; font-family:system-ui,Segoe UI,Roboto,Inter,Ubuntu,Arial; background:var(--bg); color:var(--text)}
+    header{max-width:1200px; margin:24px auto 0; padding:0 16px;}
+    h1{margin:8px 0 6px}
+    .sub{color:var(--muted)}
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 22px}
+    button{background:#1f2b45; color:var(--text); border:1px solid var(--border); padding:8px 12px; border-radius:8px; cursor:pointer}
+    .grid{max-width:1200px; margin:0 auto; padding:0 16px 60px; display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    .day{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; gap:10px}
+    .today{outline:2px solid var(--accent)}
     .tasks{display:flex; flex-direction:column; gap:10px}
-    .task{display:flex; gap:10px; align-items:flex-start; padding:10px; border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,0.02)}
-    .task input[type="checkbox"]{ width:20px; height:20px; margin-top:2px; accent-color: var(--accent2)}
-    .task a{ color:#a5d8ff; text-decoration:none }
-    .task a:hover{ text-decoration:underline }
-    .label{display:flex; flex-direction:column; gap:6px}
-    .kind{font-size:.78rem; color:var(--muted)}
-
-    .progress-wrap{ display:flex; align-items:center; gap:10px; }
-    progress{ width:100%; height:12px; appearance:none }
-    progress::-webkit-progress-bar{ background:#0b1220; border-radius:999px; border:1px solid var(--border)}
-    progress::-webkit-progress-value{ background:linear-gradient(90deg, var(--accent), var(--accent2)); border-radius:999px }
-
-    .overall{ max-width:1200px; margin: 6px auto 18px; padding:0 16px }
-    .overall .card{ background: linear-gradient(180deg, rgba(76,201,240,.08), rgba(34,197,94,.08)); border:1px solid var(--border); border-radius: var(--radius); padding:14px; box-shadow: var(--shadow); display:grid; grid-template-columns: 1fr auto; align-items:center; gap:14px }
-    .overall h2{ margin:6px 0 8px; font-size:1.1rem }
-    .kpis{ display:flex; gap:12px; flex-wrap:wrap }
-    .kpi{ background: rgba(255,255,255,.04); border:1px solid var(--border); padding:10px 12px; border-radius:12px; font-size:.92rem }
-
-    footer{ max-width:1200px; margin: 0 auto 40px; padding: 0 16px; color:var(--muted) }
-    .small{font-size:.85rem}
-    .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-    input[type="file"]{ display:none }
-    label[for="importFile"]{ cursor:pointer }
+    .task{display:flex; gap:10px; border:1px solid var(--border); border-radius:8px; padding:8px; background:rgba(255,255,255,0.02)}
+    .task a{color:#a5d8ff}
+    .badge{font-size:.8rem; padding:2px 6px; border:1px solid var(--border); border-radius:6px; color:var(--muted)}
+    .quizbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .quiz-btn{padding:6px 10px}
+    .reading{border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(255,255,255,.02)}
+    .reading h4{margin:0 0 6px 0}
+    .reading p{margin:0;color:var(--muted)}
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6)}
+    .modal.open{display:grid}
+    .modal-card{width:min(720px,92vw);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .quiz-q{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;min-height:90px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px}
+    .quiz-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   </style>
 </head>
 <body>
   <header>
     <h1>Planificador semanal de inglés — IA & Self‑Growth</h1>
-    <p class="sub">Marca lo que vas completando. Tu progreso se guarda automáticamente en este navegador (localStorage).</p>
+    <p class="sub">Marca lo que vas completando. Tu progreso se guarda automáticamente en este navegador.</p>
     <div class="toolbar">
-      <button id="resetBtn" title="Desmarcar todas las tareas de la semana">🔄 Reiniciar semana</button>
-      <button id="completeTodayBtn" class="btn-accent" title="Marcar como hecho todo lo de hoy">✅ Completar HOY</button>
-      <button id="exportBtn" title="Descargar archivo .json con tu progreso">⬇️ Exportar progreso</button>
-      <input type="file" id="importFile" accept="application/json">
-      <label for="importFile" class="btn" title="Importar un archivo .json previamente exportado">⬆️ Importar progreso</label>
+      <button id="resetBtn">🔄 Reiniciar semana</button>
+      <button id="completeTodayBtn">✅ Completar HOY</button>
     </div>
   </header>
-
   <section class="overall">
-    <div class="card">
-      <div>
-        <h2>Progreso global</h2>
-        <div class="progress-wrap"><progress id="overallProgress" max="100" value="0"></progress> <span id="overallPct">0%</span></div>
-      </div>
-      <div class="kpis">
-        <div class="kpi">✅ Completadas: <b id="doneCount">0</b></div>
-        <div class="kpi">📌 Pendientes: <b id="todoCount">0</b></div>
-        <div class="kpi">🗓️ Total semana: <b id="totalCount">0</b></div>
-      </div>
-    </div>
+    <progress id="overallProgress" max="100" value="0"></progress>
+    <span id="overallPct">0%</span>
   </section>
-
   <main class="grid" id="grid"></main>
 
-  <footer>
-    <p class="small">Sugerencia: usa la rutina corta de 15 minutos cuando vayas justo de tiempo (1 vídeo YouTube + 1 ejercicio en app). 
-    Puedes editar los enlaces haciendo clic en el ✏️ de cada tarea.</p>
-  </footer>
+  <!-- Quiz Modal -->
+  <div class="modal" id="quizModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+      <div class="modal-head">
+        <h3 id="quizTitle">Quiz — Phrasals & False Friends</h3>
+        <button id="closeQuiz">✖</button>
+      </div>
+      <div class="quiz-q" id="quizQuestion">Question…</div>
+      <div class="quiz-actions">
+        <button id="optA">A</button>
+        <button id="optB">B</button>
+      </div>
+      <div id="quizFeedback" style="margin-top:8px"></div>
+    </div>
+  </div>
 
   <template id="dayTemplate">
     <section class="day">
@@ -130,7 +80,15 @@
         <h3></h3>
         <span class="badge"><span class="done">0</span>/<span class="total">0</span></span>
       </header>
-      <div class="progress-wrap"><progress max="100" value="0"></progress> <span class="pct">0%</span></div>
+      <div class="quizbar">
+        <button class="quiz-btn" data-open-quiz>🧠 Quiz</button>
+        <span class="badge" data-quiz-info>0/0</span>
+      </div>
+      <div class="reading">
+        <h4>📖 Quick reading</h4>
+        <p class="reading-summary"></p>
+        <a class="reading-link" href="#" target="_blank">Open</a>
+      </div>
       <div class="tasks"></div>
     </section>
   </template>
@@ -138,223 +96,163 @@
   <template id="taskTemplate">
     <div class="task">
       <input type="checkbox" />
-      <div class="label">
-        <div>
-          <strong class="title"></strong>
-          <span class="kind"></span>
-        </div>
-        <div class="row">
-          <a class="link" href="#" target="_blank" rel="noopener">Abrir recurso</a>
-          <button class="btn btn-sm edit">✏️ Editar enlace</button>
-        </div>
+      <div>
+        <div><strong class="title"></strong> <span class="kind"></span></div>
+        <a class="link" href="#" target="_blank">Abrir recurso</a>
       </div>
     </div>
   </template>
 
   <script>
-    // --- Datos iniciales (puedes modificarlos a tu gusto) ---
-    const PLAN = {
-      Monday: [
-        { title: "The Office (US) S01E01", kind:"Serie", url:"https://www.youtube.com/results?search_query=The+Office+US+S01E01+full+episode+english" },
-        { title: "Rich Dad Poor Dad – Summary", kind:"Podcast", url:"https://www.youtube.com/watch?v=c9g6f2VzCzY" },
-        { title: "Two Minute Papers (AI)", kind:"YouTube", url:"https://www.youtube.com/@TwoMinutePapers" },
-        { title: "Resumen del episodio (5 frases)", kind:"Speaking", url:"https://chat.openai.com" }
+    const PLAN={
+      Monday:[
+        {title:"The Office (US) S01E01",kind:"Serie",url:"https://www.youtube.com/results?search_query=The+Office+US+S01E01+full+episode+english"},
+        {title:"Rich Dad Poor Dad — Summary",kind:"Podcast",url:"https://www.youtube.com/watch?v=c9g6f2VzCzY"},
+        {title:"Two Minute Papers (AI)",kind:"YouTube",url:"https://www.youtube.com/@TwoMinutePapers"},
+        {title:"Episode summary (5 sentences)",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Tuesday: [
-        { title: "The Crown — S01E01", kind:"Serie", url:"https://www.netflix.com/title/80025678" },
-        { title: "7 Habits — Habit 1 (Summary)", kind:"Podcast", url:"https://www.youtube.com/watch?v=GxmxcfjBT8g" },
-        { title: "ColdFusion (Tech + AI)", kind:"YouTube", url:"https://www.youtube.com/@ColdFusion" },
-        { title: "Role‑play formal (Queen)", kind:"Speaking", url:"https://chat.openai.com" }
+      Tuesday:[
+        {title:"The Crown S01E01",kind:"Serie",url:"https://www.netflix.com/title/80025678"},
+        {title:"7 Habits — Habit 1",kind:"Podcast",url:"https://www.youtube.com/watch?v=GxmxcfjBT8g"},
+        {title:"ColdFusion (Tech + AI)",kind:"YouTube",url:"https://www.youtube.com/@ColdFusion"},
+        {title:"Formal role‑play (Queen)",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Wednesday: [
-        { title: "Modern Family S01E01", kind:"Serie", url:"https://www.youtube.com/results?search_query=Modern+Family+S01E01+full+episode+english" },
-        { title: "Atomic Habits — Summary", kind:"Podcast", url:"https://www.youtube.com/watch?v=4rjMUo5W6C0" },
-        { title: "AI Explained", kind:"YouTube", url:"https://www.youtube.com/@ai-explained-" },
-        { title: "3 hábitos atómicos (en inglés)", kind:"Speaking", url:"https://chat.openai.com" }
+      Wednesday:[
+        {title:"Modern Family S01E01",kind:"Serie",url:"https://www.youtube.com/results?search_query=Modern+Family+S01E01+full+episode+english"},
+        {title:"Atomic Habits — Summary",kind:"Podcast",url:"https://www.youtube.com/watch?v=4rjMUo5W6C0"},
+        {title:"AI Explained",kind:"YouTube",url:"https://www.youtube.com/@ai-explained-"},
+        {title:"3 atomic habits (EN)",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Thursday: [
-        { title: "Brooklyn Nine‑Nine S01E01", kind:"Serie", url:"https://www.youtube.com/results?search_query=Brooklyn+Nine+Nine+S01E01+full+episode+english" },
-        { title: "Thinking, Fast and Slow — Key Ideas", kind:"Podcast", url:"https://www.youtube.com/watch?v=R5EDG14UxzU" },
-        { title: "Data School (Data Science)", kind:"YouTube", url:"https://www.youtube.com/@dataschool" },
-        { title: "Impro policial (en inglés)", kind:"Speaking", url:"https://chat.openai.com" }
+      Thursday:[
+        {title:"Brooklyn Nine Nine S01E01",kind:"Serie",url:"https://www.youtube.com/results?search_query=Brooklyn+Nine+Nine+S01E01+full+episode+english"},
+        {title:"Thinking, Fast and Slow — Key ideas",kind:"Podcast",url:"https://www.youtube.com/watch?v=R5EDG14UxzU"},
+        {title:"Data School (Data Science)",kind:"YouTube",url:"https://www.youtube.com/@dataschool"},
+        {title:"Police improv (EN)",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Friday: [
-        { title: "The Office (US) S01E02", kind:"Serie", url:"https://www.youtube.com/results?search_query=The+Office+US+S01E02+full+episode+english" },
-        { title: "Secrets of the Millionaire Mind — Summary", kind:"Podcast", url:"https://www.youtube.com/watch?v=he8yKs8GzUg" },
-        { title: "AI Coffee Break with Letitia", kind:"YouTube", url:"https://www.youtube.com/@AiCoffeeBreak" },
-        { title: "Discurso de 2 min (money mindset)", kind:"Speaking", url:"https://chat.openai.com" }
+      Friday:[
+        {title:"The Office (US) S01E02",kind:"Serie",url:"https://www.youtube.com/results?search_query=The+Office+US+S01E02+full+episode+english"},
+        {title:"Secrets of the Millionaire Mind — Summary",kind:"Podcast",url:"https://www.youtube.com/watch?v=he8yKs8GzUg"},
+        {title:"AI Coffee Break with Letitia",kind:"YouTube",url:"https://www.youtube.com/@AiCoffeeBreak"},
+        {title:"2‑min money mindset speech",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Saturday: [
-        { title: "The Crown — S01E02", kind:"Serie", url:"https://www.netflix.com/title/80025678" },
-        { title: "Book summaries — playlist", kind:"Podcast", url:"https://www.youtube.com/playlist?list=PL0eyrZgxdwhx5Fh8IsC7vDUdK-ZgSnznE" },
-        { title: "3Blue1Brown (Math/Data)", kind:"YouTube", url:"https://www.youtube.com/@3blue1brown" },
-        { title: "Diferencias acento UK vs US", kind:"Speaking", url:"https://chat.openai.com" }
+      Saturday:[
+        {title:"The Crown S01E02",kind:"Serie",url:"https://www.netflix.com/title/80025678"},
+        {title:"Book summaries — playlist",kind:"Podcast",url:"https://www.youtube.com/playlist?list=PL0eyrZgxdwhx5Fh8IsC7vDUdK-ZgSnznE"},
+        {title:"3Blue1Brown (Math/Data)",kind:"YouTube",url:"https://www.youtube.com/@3blue1brown"},
+        {title:"UK vs US accent (3 diffs)",kind:"Speaking",url:"https://chat.openai.com"}
       ],
-      Sunday: [
-        { title: "Rever clips favoritos (sin subtítulos)", kind:"Serie", url:"https://www.youtube.com/results?search_query=Friends+best+scenes+english" },
-        { title: "Repetir podcast (sin transcript)", kind:"Podcast", url:"https://www.youtube.com/results?search_query=AI+podcast+english" },
-        { title: "AI News (libre)", kind:"YouTube", url:"https://www.youtube.com/results?search_query=AI+news+2025" },
-        { title: "Reporte semanal (3 min)", kind:"Speaking", url:"https://chat.openai.com" }
+      Sunday:[
+        {title:"Friends best scenes (no subs)",kind:"Serie",url:"https://www.youtube.com/results?search_query=Friends+best+scenes+english"},
+        {title:"Replay podcast (no transcript)",kind:"Podcast",url:"https://www.youtube.com/results?search_query=AI+podcast+english"},
+        {title:"AI news (free choice)",kind:"YouTube",url:"https://www.youtube.com/results?search_query=AI+news+2025"},
+        {title:"Weekly 3‑min report (EN)",kind:"Speaking",url:"https://chat.openai.com"}
       ]
     };
 
-    // --- Utilidades de almacenamiento ---
-    const STORAGE_KEY = "english_week_planner_v1";
-    const loadState = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    const saveState = (state) => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const READS={
+      Monday:{title:"What is ChatGPT and How to Use It",url:"https://www.theverge.com/23519682/chatgpt-ai-chatbot-how-to-use",summary:"Popular Verge guide introducing ChatGPT and practical uses."},
+      Tuesday:{title:"The Rise of AI Agents",url:"https://venturebeat.com/ai/the-rise-of-ai-agents/",summary:"VentureBeat article on autonomous AI agents and trends."},
+      Wednesday:{title:"Google Gemini vs ChatGPT",url:"https://www.zdnet.com/article/google-gemini-vs-chatgpt/",summary:"ZDNet comparison between Gemini and ChatGPT."},
+      Thursday:{title:"What is Make.com?",url:"https://zapier.com/blog/make-vs-zapier/",summary:"Zapier blog comparing Make.com and automation platforms."},
+      Friday:{title:"n8n: Open Source Automation",url:"https://towardsdatascience.com/n8n-open-source-zapier-alternative-9d8e264b8a9d",summary:"Medium post introducing n8n for automation."},
+      Saturday:{title:"8 Ways to Make Money with AI",url:"https://www.businessinsider.com/guides/tech/how-to-make-money-with-ai",summary:"Business Insider tips on monetizing AI."},
+      Sunday:{title:"10 AI Side Hustles That Work",url:"https://www.forbes.com/sites/forbestechcouncil/2024/01/05/10-ai-side-hustles-that-work/",summary:"Forbes article listing AI-powered business ideas."}
+    };
 
-    // --- Render ---
-    const gridEl = document.getElementById('grid');
-    const dayTpl = document.getElementById('dayTemplate');
-    const taskTpl = document.getElementById('taskTemplate');
+    const QUIZ={
+      Monday:[{q:"PHRASAL — figure out",a:"to understand/solve",b:"to invent",correct:"a"}],
+      Tuesday:[{q:"PHRASAL — look into",a:"to investigate",b:"to look inside physically",correct:"a"}],
+      Wednesday:[{q:"PHRASAL — pick up",a:"to learn",b:"to pay",correct:"a"}],
+      Thursday:[{q:"PHRASAL — roll out",a:"to launch",b:"to roll physically",correct:"a"}],
+      Friday:[{q:"PHRASAL — wrap up",a:"to finish",b:"to wrap only",correct:"a"}],
+      Saturday:[{q:"PHRASAL — look after",a:"to take care of",b:"to search after",correct:"a"}],
+      Sunday:[{q:"PHRASAL — make up",a:"to invent/make peace",b:"to put on make‑up only",correct:"a"}]
+    };
 
-    const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const todayName = dayNames[new Date().getDay()];
+    const STORAGE_KEY="planner_state_v1";
+    const load=()=>JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+    const save=(s)=>localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+    let state=load();
 
-    let state = loadState(); // { day: { indexChecked: true, customUrlByIndex: "..." } }
+    const grid=document.getElementById('grid');
+    const dayTpl=document.getElementById('dayTemplate');
+    const taskTpl=document.getElementById('taskTemplate');
 
     function render(){
-      gridEl.innerHTML = '';
-      let total=0, done=0;
+      grid.innerHTML=''; let total=0,done=0;
+      Object.entries(PLAN).forEach(([day,tasks])=>{
+        const node=dayTpl.content.firstElementChild.cloneNode(true);
+        if(day===new Date().toLocaleDateString('en-US',{weekday:'long'})) node.classList.add('today');
+        node.querySelector('h3').textContent=day;
 
-      Object.entries(PLAN).forEach(([day, tasks]) => {
-        const dayNode = dayTpl.content.firstElementChild.cloneNode(true);
-        const isToday = day === todayName;
-        if(isToday) dayNode.classList.add('today');
-        dayNode.querySelector('h3').textContent = translateDay(day);
+        // Reading block
+        const read=READS[day];
+        node.querySelector('.reading-summary').textContent=read.summary;
+        const rlink=node.querySelector('.reading-link');
+        rlink.href=read.url; rlink.textContent=read.title;
 
-        const tasksWrap = dayNode.querySelector('.tasks');
-        tasksWrap.innerHTML='';
+        // Quiz
+        const qInfo=node.querySelector('[data-quiz-info]');
+        const qBtn=node.querySelector('[data-open-quiz]');
+        qInfo.textContent=`0/${(QUIZ[day]||[]).length}`;
+        qBtn.addEventListener('click',()=>openQuiz(day));
 
-        const dayState = state[day] || { checked:{}, urls:{} };
-        let dayDone = 0;
-
-        tasks.forEach((t, idx) => {
-          const taskNode = taskTpl.content.firstElementChild.cloneNode(true);
-          const cb = taskNode.querySelector('input[type="checkbox"]');
-          const titleEl = taskNode.querySelector('.title');
-          const kindEl = taskNode.querySelector('.kind');
-          const linkEl = taskNode.querySelector('.link');
-          const editBtn = taskNode.querySelector('.edit');
-
-          titleEl.textContent = t.title;
-          kindEl.textContent = ` · ${t.kind}`;
-
-          const url = dayState.urls?.[idx] || t.url;
-          linkEl.href = url;
-
-          cb.checked = !!dayState.checked?.[idx];
-          if(cb.checked) dayDone++;
-
-          cb.addEventListener('change', () => {
-            state[day] = state[day] || { checked:{}, urls:{} };
-            state[day].checked[idx] = cb.checked;
-            saveState(state); updateKpis();
-            // actualizar contadores de la tarjeta
-            updateDayCard(dayNode, tasks.length, Object.values(state[day].checked).filter(Boolean).length);
-          });
-
-          editBtn.addEventListener('click', () => {
-            const newUrl = prompt('Pega el nuevo enlace para:\n' + t.title, linkEl.href);
-            if(newUrl){
-              state[day] = state[day] || { checked:{}, urls:{} };
-              state[day].urls[idx] = newUrl;
-              linkEl.href = newUrl; saveState(state);
-            }
-          });
-
-          tasksWrap.appendChild(taskNode);
+        const wrap=node.querySelector('.tasks');
+        let dDone=0;
+        tasks.forEach((t,i)=>{
+          const tn=taskTpl.content.firstElementChild.cloneNode(true);
+          tn.querySelector('.title').textContent=t.title;
+          tn.querySelector('.kind').textContent=' · '+t.kind;
+          tn.querySelector('.link').href=t.url;
+          const cb=tn.querySelector('input');
+          cb.checked=!!state[day]?.[i];
+          if(cb.checked) dDone++;
+          cb.addEventListener('change',()=>{state[day]=state[day]||{};state[day][i]=cb.checked; save(state);render();});
+          wrap.appendChild(tn);
         });
-
-        const badgeDone = dayNode.querySelector('.done');
-        const badgeTotal = dayNode.querySelector('.total');
-        const progressEl = dayNode.querySelector('progress');
-        const pctEl = dayNode.querySelector('.pct');
-
-        badgeDone.textContent = dayDone;
-        badgeTotal.textContent = tasks.length;
-        const pct = Math.round((dayDone / tasks.length) * 100);
-        progressEl.value = pct; pctEl.textContent = pct + '%';
-
-        total += tasks.length; done += dayDone;
-        gridEl.appendChild(dayNode);
+        node.querySelector('.done').textContent=dDone;
+        node.querySelector('.total').textContent=tasks.length;
+        total+=tasks.length; done+=dDone;
+        grid.appendChild(node);
       });
-
-      // KPIs globales
-      const overallPct = Math.round((done/total)*100) || 0;
-      document.getElementById('overallProgress').value = overallPct;
-      document.getElementById('overallPct').textContent = overallPct + '%';
-      document.getElementById('doneCount').textContent = done;
-      document.getElementById('todoCount').textContent = (total - done);
-      document.getElementById('totalCount').textContent = total;
+      const pct=Math.round((done/total)*100)||0;
+      document.getElementById('overallProgress').value=pct;
+      document.getElementById('overallPct').textContent=pct+'%';
     }
 
-    function updateDayCard(dayNode, total, done){
-      const progress = Math.round((done/total)*100);
-      dayNode.querySelector('.done').textContent = done;
-      dayNode.querySelector('.total').textContent = total;
-      dayNode.querySelector('progress').value = progress;
-      dayNode.querySelector('.pct').textContent = progress + '%';
-    }
-
-    function updateKpis(){
-      // recompute across DOM state
-      let total=0, done=0;
-      Object.entries(PLAN).forEach(([day, tasks]) => {
-        total += tasks.length;
-        const d = state[day]?.checked || {};
-        done += Object.values(d).filter(Boolean).length;
-      });
-      const overallPct = Math.round((done/total)*100) || 0;
-      document.getElementById('overallProgress').value = overallPct;
-      document.getElementById('overallPct').textContent = overallPct + '%';
-      document.getElementById('doneCount').textContent = done;
-      document.getElementById('todoCount').textContent = (total - done);
-      document.getElementById('totalCount').textContent = total;
-    }
-
-    function translateDay(en){
-      return {
-        Monday:'Lunes', Tuesday:'Martes', Wednesday:'Miércoles', Thursday:'Jueves', Friday:'Viernes', Saturday:'Sábado', Sunday:'Domingo'
-      }[en] || en;
-    }
-
-    // --- Acciones toolbar ---
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      if(confirm('¿Seguro que quieres reiniciar la semana? Se desmarcarán todas las tareas.')){
-        state = {}; saveState(state); render();
+    function openQuiz(day){
+      const list=QUIZ[day]||[]; if(list.length===0) return;
+      let idx=0; let correct=0;
+      function showQ(){
+        const q=list[idx];
+        document.getElementById('quizQuestion').textContent=q.q;
+        const optA=document.getElementById('optA');
+        const optB=document.getElementById('optB');
+        optA.textContent=q.a; optB.textContent=q.b;
+        optA.onclick=()=>choose('a'); optB.onclick=()=>choose('b');
       }
+      function choose(ans){
+        const q=list[idx];
+        if(ans===q.correct){ correct++; document.getElementById('quizFeedback').textContent='✅ Correct'; }
+        else{ document.getElementById('quizFeedback').textContent='❌ Wrong'; }
+        idx++;
+        if(idx<list.length){ setTimeout(showQ,600);} else {
+          document.getElementById('quizFeedback').textContent=`Done! ${correct}/${list.length}`;
+        }
+      }
+      document.getElementById('quizModal').classList.add('open');
+      document.getElementById('closeQuiz').onclick=()=>document.getElementById('quizModal').classList.remove('open');
+      showQ();
+    }
+
+    document.getElementById('resetBtn').addEventListener('click',()=>{state={};save(state);render();});
+    document.getElementById('completeTodayBtn').addEventListener('click',()=>{
+      const todayName=new Date().toLocaleDateString('en-US',{weekday:'long'});
+      const d=PLAN[todayName]; state[todayName]=state[todayName]||{};
+      d.forEach((_,i)=>state[todayName][i]=true);
+      save(state);render();
     });
 
-    document.getElementById('completeTodayBtn').addEventListener('click', () => {
-      const day = todayName; const tasks = PLAN[day];
-      state[day] = state[day] || { checked:{}, urls:{} };
-      tasks.forEach((_, idx)=> state[day].checked[idx] = true);
-      saveState(state); render();
-    });
-
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'progreso_ingles_semana.json';
-      document.body.appendChild(a); a.click(); a.remove();
-    });
-
-    document.getElementById('importFile').addEventListener('change', (e) => {
-      const file = e.target.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try{
-          const data = JSON.parse(reader.result);
-          state = data; saveState(state); render();
-        }catch(err){ alert('Archivo no válido. Asegúrate de seleccionar un .json exportado.'); }
-      };
-      reader.readAsText(file);
-      e.target.value = '';
-    });
-
-    // --- Init ---
     render();
   </script>
 </body>

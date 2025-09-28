@@ -159,14 +159,72 @@
       Sunday:{title:"10 AI Side Hustles That Work",url:"https://www.forbes.com/sites/forbestechcouncil/2024/01/05/10-ai-side-hustles-that-work/",summary:"Forbes article listing AI-powered business ideas."}
     };
 
-    const QUIZ={
-      Monday:[{q:"PHRASAL — figure out",a:"to understand/solve",b:"to invent",correct:"a"}],
-      Tuesday:[{q:"PHRASAL — look into",a:"to investigate",b:"to look inside physically",correct:"a"}],
-      Wednesday:[{q:"PHRASAL — pick up",a:"to learn",b:"to pay",correct:"a"}],
-      Thursday:[{q:"PHRASAL — roll out",a:"to launch",b:"to roll physically",correct:"a"}],
-      Friday:[{q:"PHRASAL — wrap up",a:"to finish",b:"to wrap only",correct:"a"}],
-      Saturday:[{q:"PHRASAL — look after",a:"to take care of",b:"to search after",correct:"a"}],
-      Sunday:[{q:"PHRASAL — make up",a:"to invent/make peace",b:"to put on make‑up only",correct:"a"}]
+    // Shared 50‑item quiz for the whole week (25 phrasals + 25 false friends)
+    const SHARED_QUIZ = [
+      // --- Phrasal verbs (25)
+      {q:"PHRASAL — figure out", a:"to understand/solve", b:"to invent", correct:"a"},
+      {q:"PHRASAL — set up", a:"to configure/start", b:"to cancel", correct:"a"},
+      {q:"PHRASAL — carry on", a:"to continue", b:"to carry something", correct:"a"},
+      {q:"PHRASAL — look into", a:"to investigate", b:"to look inside physically", correct:"a"},
+      {q:"PHRASAL — bring up", a:"to mention (a topic)", b:"to physically raise", correct:"a"},
+      {q:"PHRASAL — turn down", a:"to reject", b:"to turn on", correct:"a"},
+      {q:"PHRASAL — point out", a:"to indicate", b:"to aim a weapon", correct:"a"},
+      {q:"PHRASAL — pick up", a:"to collect/learn", b:"to pay", correct:"a"},
+      {q:"PHRASAL — run into", a:"to meet by chance", b:"to run toward", correct:"a"},
+      {q:"PHRASAL — back up", a:"to support/make a copy", b:"to only move backward", correct:"a"},
+      {q:"PHRASAL — log in", a:"to sign in", b:"to sign out", correct:"a"},
+      {q:"PHRASAL — roll out", a:"to launch/implement", b:"to roll physically", correct:"a"},
+      {q:"PHRASAL — brush up (on)", a:"to review/improve", b:"to brush physically", correct:"a"},
+      {q:"PHRASAL — wrap up", a:"to finish", b:"to wrap only", correct:"a"},
+      {q:"PHRASAL — set off", a:"to start a journey/trigger", b:"to switch off", correct:"a"},
+      {q:"PHRASAL — break down", a:"to stop working/collapse", b:"to break into pieces only", correct:"a"},
+      {q:"PHRASAL — look after", a:"to take care of", b:"to search after", correct:"a"},
+      {q:"PHRASAL — come up with", a:"to think of/produce", b:"to come with", correct:"a"},
+      {q:"PHRASAL — get along", a:"to have a good relationship", b:"to move forward", correct:"a"},
+      {q:"PHRASAL — make up", a:"to invent/reconcile", b:"to put on make‑up only", correct:"a"},
+      {q:"PHRASAL — put off", a:"to postpone", b:"to put clothing on", correct:"a"},
+      {q:"PHRASAL — take over", a:"to assume control", b:"to take again", correct:"a"},
+      {q:"PHRASAL — fill in", a:"to complete (a form)", b:"to fill inside physically", correct:"a"},
+      {q:"PHRASAL — find out", a:"to discover", b:"to take out", correct:"a"},
+      {q:"PHRASAL — go over", a:"to review", b:"to go physically over something", correct:"a"},
+
+      // --- False friends (25)
+      {q:"FALSE FRIEND — actually", a:"in fact", b:"currently", correct:"a"},
+      {q:"FALSE FRIEND — sensible", a:"reasonable/prudent", b:"sensitive", correct:"a"},
+      {q:"FALSE FRIEND — library", a:"biblioteca", b:"librería", correct:"a"},
+      {q:"FALSE FRIEND — constipated", a:"estreñido", b:"resfriado", correct:"a"},
+      {q:"FALSE FRIEND — carpet", a:"moqueta/alfombra", b:"carpeta", correct:"a"},
+      {q:"FALSE FRIEND — rope", a:"cuerda", b:"ropa", correct:"a"},
+      {q:"FALSE FRIEND — discussion", a:"debate/conversación", b:"pelea", correct:"a"},
+      {q:"FALSE FRIEND — embarrassed", a:"avergonzado", b:"embarazada", correct:"a"},
+      {q:"FALSE FRIEND — deceive", a:"engañar", b:"discutir", correct:"a"},
+      {q:"FALSE FRIEND — notice", a:"aviso/advertencia", b:"noticia", correct:"a"},
+      {q:"FALSE FRIEND — realise", a:"darse cuenta", b:"realizar (hacer)", correct:"a"},
+      {q:"FALSE FRIEND — assist", a:"ayudar", b:"asistir (acudir)", correct:"a"},
+      {q:"FALSE FRIEND — exit", a:"salida", b:"éxito", correct:"a"},
+      {q:"FALSE FRIEND — lecture", a:"clase magistral/charla", b:"lectura", correct:"a"},
+      {q:"FALSE FRIEND — fabric", a:"tejido", b:"fábrica", correct:"a"},
+      {q:"FALSE FRIEND — eventually", a:"finalmente/con el tiempo", b:"posiblemente", correct:"a"},
+      {q:"FALSE FRIEND — college", a:"universidad (EE. UU.)", b:"colegio", correct:"a"},
+      {q:"FALSE FRIEND — pretend", a:"fingir", b:"pretender (to intend)", correct:"a"},
+      {q:"FALSE FRIEND — support", a:"apoyar", b:"soportar (to tolerate)", correct:"a"},
+      {q:"FALSE FRIEND — argument", a:"discusión", b:"argumento (razonamiento)", correct:"a"},
+      {q:"FALSE FRIEND — agenda", a:"orden del día", b:"agenda (diario personal)", correct:"a"},
+      {q:"FALSE FRIEND — billion", a:"mil millones", b:"billón (10^12)", correct:"a"},
+      {q:"FALSE FRIEND — mayor", a:"alcalde", b:"mayor (older)", correct:"a"},
+      {q:"FALSE FRIEND — recipe", a:"receta", b:"recibo", correct:"a"},
+      {q:"FALSE FRIEND — sensible (ES 'sensible')", a:"sensitive", b:"reasonable/prudent", correct:"a"}
+    ];
+
+    // Use the same shared quiz for every day
+    const QUIZ = {
+      Monday: SHARED_QUIZ,
+      Tuesday: SHARED_QUIZ,
+      Wednesday: SHARED_QUIZ,
+      Thursday: SHARED_QUIZ,
+      Friday: SHARED_QUIZ,
+      Saturday: SHARED_QUIZ,
+      Sunday: SHARED_QUIZ
     };
 
     const STORAGE_KEY="planner_state_v1";

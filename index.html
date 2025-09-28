@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Planificador semanal de inglés</title>
   <style>
-    :root{
-      --bg:#0b1220; --card:#121a2b; --muted:#6b7a90; --text:#eaf1ff; --accent:#4cc9f0;
-      --border:#1e293b; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
-    }
+    :root{ --bg:#0b1220; --card:#121a2b; --muted:#6b7a90; --text:#eaf1ff; --accent:#4cc9f0; --border:#1e293b; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35); --green:#22c55e; --red:#ef4444; }
     body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Ubuntu,Arial;background:var(--bg);color:var(--text)}
     header{max-width:1200px;margin:24px auto 0;padding:0 16px}
     h1{margin:8px 0 6px}
@@ -17,10 +14,10 @@
     button{background:#1f2b45;color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:8px;cursor:pointer}
     .overall{max-width:1200px;margin:0 auto 10px;padding:0 16px;display:flex;gap:12px;align-items:center}
     .grid{max-width:1200px;margin:0 auto;padding:0 16px 60px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
-    .day{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;transition:border 0.3s}
+    .day{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;transition:border .3s}
     .day.today{border:3px solid var(--accent)}
     .tasks{display:flex;flex-direction:column;gap:10px}
-    .task{display:flex;gap:10px;border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(255,255,255,0.02)}
+    .task{display:flex;gap:10px;border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(255,255,255,.02)}
     .task a{color:#a5d8ff}
     .badge{font-size:.8rem;padding:2px 6px;border:1px solid var(--border);border-radius:6px;color:var(--muted)}
     .quizbar{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -30,30 +27,33 @@
     .reading p{margin:0;color:var(--muted)}
     .reading-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .reading-links a{background:#1f2b45;border:1px solid var(--border);padding:6px 10px;border-radius:8px;color:#a5d8ff;text-decoration:none;white-space:nowrap}
-    .quiz-history{margin-top:10px;padding:6px;border:1px solid var(--border);border-radius:8px;max-height:120px;overflow:auto;font-size:0.9rem;color:var(--muted)}
-    /* Modal */
+    .quiz-history{margin-top:10px;padding:6px;border:1px solid var(--border);border-radius:8px;max-height:120px;overflow:auto;font-size:.9rem;color:var(--muted)}
     .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.6)}
     .modal.open{display:grid}
     .modal-card{width:min(720px,92vw);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
     .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
     .quiz-q{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;min-height:90px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px}
     .quiz-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .quiz-actions button.correct{background:var(--green)!important}
+    .quiz-actions button.wrong{background:var(--red)!important}
     .quiz-extra{margin-top:10px;text-align:center;display:flex;flex-direction:column;gap:8px}
   </style>
 </head>
 <body>
   <header>
-    <h1>Planificador semanal de inglés — IA & Self‑Growth</h1>
-    <p class="sub">Marca lo que vas completando. Tu progreso se guarda automáticamente en este navegador.</p>
+    <h1>Planificador semanal de inglés — IA & Self-Growth</h1>
+    <p class="sub">Marca lo que vas completando. Tu progreso y el historial del quiz se guardan en este navegador.</p>
     <div class="toolbar">
       <button id="resetBtn">🔄 Reiniciar semana</button>
       <button id="completeTodayBtn">✅ Completar HOY</button>
     </div>
   </header>
+
   <section class="overall">
     <progress id="overallProgress" max="100" value="0" aria-label="Progreso semanal"></progress>
     <span id="overallPct">0%</span>
   </section>
+
   <main class="grid" id="grid"></main>
 
   <!-- Quiz Modal -->
@@ -106,149 +106,151 @@
         <a class="link" href="#" target="_blank" rel="noopener">Abrir recurso</a>
       </div>
     </div>
-  </template>  <script>
-    // Mappings for book-topic podcasts on YouTube and AI/Data videos per day
-    const PODCAST_YT = {
-      Monday:  {label:"Rich Dad Poor Dad (YouTube)",     url:"https://www.youtube.com/results?search_query=rich+dad+poor+dad+summary+english"},
-      Tuesday: {label:"Atomic Habits (YouTube)",         url:"https://www.youtube.com/results?search_query=atomic+habits+summary+english"},
-      Wednesday:{label:"7 Habits of Highly Effective People (YouTube)", url:"https://www.youtube.com/results?search_query=7+habits+of+highly+effective+people+summary+english"},
-      Thursday:{label:"Thinking, Fast and Slow (YouTube)",url:"https://www.youtube.com/results?search_query=thinking+fast+and+slow+summary+english"},
-      Friday:  {label:"Secrets of the Millionaire Mind (YouTube)", url:"https://www.youtube.com/results?search_query=secrets+of+the+millionaire+mind+summary+english"},
-      Saturday:{label:"Self‑Growth / Productivity (YouTube)", url:"https://www.youtube.com/results?search_query=self+improvement+podcast+english"},
-      Sunday:  {label:"AI & Money (YouTube)",            url:"https://www.youtube.com/results?search_query=ai+and+money+podcast"}
-    };
+  </template>
 
-    const AI_VIDEO = {
-      Monday:  {label:"AI News & Tools",   url:"https://www.youtube.com/@mattvidpro"},
-      Tuesday: {label:"Data Science",      url:"https://www.youtube.com/@KenJee1"},
-      Wednesday:{label:"AI Tools Roundups",url:"https://www.youtube.com/@FutureTools"},
-      Thursday:{label:"Automation (Make)", url:"https://www.youtube.com/@MakeHQ"},
-      Friday:  {label:"AI Agents",         url:"https://www.youtube.com/@aiexplained-official"},
-      Saturday:{label:"Machine Learning",   url:"https://www.youtube.com/@3blue1brown"},
-      Sunday:  {label:"Tech & AI Stories", url:"https://www.youtube.com/@ColdFusion"}
-    };
-
-const SHARED_QUIZ=[
-  // --- 25 Phrasal Verbs ---
-  {q:"What does 'give up' mean?",a:"Surrender",b:"Continue",correct:"a",example:"He decided to give up smoking after 10 years."},
-  {q:"What does 'pick up' mean?",a:"Collect",b:"Drop",correct:"a",example:"Can you pick up the kids from school today?"},
-  {q:"What does 'run out of' mean?",a:"Exhaust supply",b:"Replenish",correct:"a",example:"We ran out of coffee, so I'll buy more."},
-  {q:"What does 'find out' mean?",a:"Discover",b:"Forget",correct:"a",example:"I just found out the meeting was moved."},
-  {q:"What does 'look up' mean?",a:"Search for information",b:"Ignore",correct:"a",example:"Look up the word in the dictionary."},
-  {q:"What does 'turn on' mean?",a:"Start a device",b:"Break a device",correct:"a",example:"Please turn on the lights."},
-  {q:"What does 'turn off' mean?",a:"Stop a device",b:"Fix a device",correct:"a",example:"Don't forget to turn off the oven."},
-  {q:"What does 'put off' mean?",a:"Postpone",b:"Advance",correct:"a",example:"We had to put off the trip until June."},
-  {q:"What does 'put on' mean?",a:"Wear",b:"Take off",correct:"a",example:"Put on a jacket, it's cold."},
-  {q:"What does 'take off' mean?",a:"Remove or depart",b:"Arrive",correct:"a",example:"The plane takes off at 9 am."},
-  {q:"What does 'bring up' mean?",a:"Mention a topic",b:"Hide a topic",correct:"a",example:"She brought up an interesting point."},
-  {q:"What does 'come across' mean?",a:"Find by chance",b:"Lose",correct:"a",example:"I came across an old photo yesterday."},
-  {q:"What does 'work out' mean?",a:"Exercise/solve",b:"Complicate",correct:"a",example:"We can work out the details later."},
-  {q:"What does 'set up' mean?",a:"Arrange/establish",b:"Cancel",correct:"a",example:"Let's set up a call for tomorrow."},
-  {q:"What does 'break down' mean?",a:"Stop functioning",b:"Speed up",correct:"a",example:"My car broke down on the highway."},
-  {q:"What does 'carry on' mean?",a:"Continue",b:"Quit",correct:"a",example:"Carry on with the exercise, please."},
-  {q:"What does 'get along (with)' mean?",a:"Have a good relationship",b:"Argue",correct:"a",example:"Do you get along with your coworkers?"},
-  {q:"What does 'look after' mean?",a:"Take care of",b:"Ignore",correct:"a",example:"I'll look after the kids tonight."},
-  {q:"What does 'take up' mean?",a:"Start a hobby",b:"Abandon a hobby",correct:"a",example:"I took up yoga last year."},
-  {q:"What does 'figure out' mean?",a:"Solve/understand",b:"Confuse",correct:"a",example:"Can you figure out this error?"},
-  {q:"What does 'go on' mean?",a:"Continue/happen",b:"Stop",correct:"a",example:"Please go on, I'm listening."},
-  {q:"What does 'catch up' mean?",a:"Reach the same level",b:"Fall behind",correct:"a",example:"I need to catch up on emails."},
-  {q:"What does 'point out' mean?",a:"Indicate",b:"Hide",correct:"a",example:"He pointed out a typo in the report."},
-  {q:"What does 'cut down on' mean?",a:"Reduce",b:"Increase",correct:"a",example:"I'm cutting down on sugar this month."},
-  {q:"What does 'fall apart' mean?",a:"Break into pieces",b:"Come together",correct:"a",example:"The old book is falling apart."},
-
-  // --- 25 False Friends ---
-  {q:"False friend: 'actual' means…",a:"Current",b:"Real",correct:"a",example:"Our actual budget is smaller this year (meaning: current)."},
-  {q:"False friend: 'sensible' means…",a:"Practical/reasonable",b:"Sensitive",correct:"a",example:"That's a sensible decision given the data."},
-  {q:"False friend: 'sensitive' means…",a:"Easily affected",b:"Sensible/practical",correct:"a",example:"He's sensitive to criticism."},
-  {q:"False friend: 'assist' means…",a:"Help",b:"Attend",correct:"a",example:"Can you assist me with this task?"},
-  {q:"False friend: 'attend' means…",a:"Go to (be present)",b:"Assist",correct:"a",example:"She will attend the conference."},
-  {q:"False friend: 'constipated' means…",a:"Unable to pass stool",b:"Have a cold",correct:"a",example:"He felt constipated after the trip."},
-  {q:"False friend: 'fabric' means…",a:"Cloth/material",b:"Factory",correct:"a",example:"The dress is made of a soft fabric."},
-  {q:"False friend: 'library' means…",a:"Public book collection",b:"Bookstore",correct:"a",example:"I studied at the library all afternoon."},
-  {q:"False friend: 'carpet' means…",a:"Floor covering",b:"Folder",correct:"a",example:"They replaced the carpet in the office."},
-  {q:"False friend: 'embarrassed' means…",a:"Ashamed",b:"Pregnant",correct:"a",example:"I felt embarrassed after the mistake."},
-  {q:"False friend: 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"The exit is on your left."},
-  {q:"False friend: 'rope' means…",a:"Thick cord",b:"Clothes",correct:"a",example:"Tie it with a rope."},
-  {q:"False friend: 'realize' means…",a:"Become aware",b:"Achieve",correct:"a",example:"I didn't realize it was so late."},
-  {q:"False friend: 'actually' means…",a:"In fact",b:"Currently",correct:"a",example:"I actually like working with data."},
-  {q:"False friend: 'eventually' means…",a:"In the end",b:"Possibly",correct:"a",example:"We eventually solved the bug."},
-  {q:"False friend: 'advertise' means…",a:"Promote",b:"Warn",correct:"a",example:"They advertise their product online."},
-  {q:"False friend: 'notice' means…",a:"Observe/announcement",b:"Realize",correct:"a",example:"Did you notice the new layout?"},
-  {q:"False friend: 'pretend' means…",a:"Act as if",b:"Intend",correct:"a",example:"He pretended to be asleep."},
-  {q:"False friend: 'resume' means…",a:"CV/résumé",b:"Summary",correct:"a",example:"Please email your resume to HR."},
-  {q:"False friend: 'support' means…",a:"Help/back up",b:"Tolerate",correct:"a",example:"We support open-source projects."},
-  {q:"False friend: 'argument' means…",a:"Disagreement",b:"Plot/argumento",correct:"a",example:"They had an argument about money."},
-  {q:"False friend: 'record' means…",a:"Write down/register",b:"Remember",correct:"a",example:"Record your expenses daily."},
-  {q:"False friend: 'deception' means…",a:"Trickery/cheating",b:"Disappointment",correct:"a",example:"It was a clear case of deception."},
-  {q:"False friend: 'discussion' means…",a:"Conversation/debate",b:"Fight",correct:"a",example:"We had a productive discussion."},
-  {q:"False friend: 'exit' vs 'éxito' — 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"Use the emergency exit if needed."}
-];
-
-    const QUIZ={Monday:SHARED_QUIZ,Tuesday:SHARED_QUIZ,Wednesday:SHARED_QUIZ,Thursday:SHARED_QUIZ,Friday:SHARED_QUIZ,Saturday:SHARED_QUIZ,Sunday:SHARED_QUIZ};
-
-    let state={quizScores:{},histories:{}};
+  <script>
+    // ===== Constants & Helpers =====
+    const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    function shuffleArray(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
     function saveState(s){localStorage.setItem('planner_state',JSON.stringify(s));}
-    function loadState(){return JSON.parse(localStorage.getItem('planner_state')||'{}');}
-    state=loadState();
+    function loadState(){try{return JSON.parse(localStorage.getItem('planner_state')||'{}')}catch(e){return {}}}
 
+    // ===== Links per day =====
+    const PODCAST_YT={
+      Monday:{label:"Rich Dad Poor Dad (YouTube)",url:"https://www.youtube.com/results?search_query=rich+dad+poor+dad+summary+english"},
+      Tuesday:{label:"Atomic Habits (YouTube)",url:"https://www.youtube.com/results?search_query=atomic+habits+summary+english"},
+      Wednesday:{label:"7 Habits of Highly Effective People (YouTube)",url:"https://www.youtube.com/results?search_query=7+habits+of+highly+effective+people+summary+english"},
+      Thursday:{label:"Thinking, Fast and Slow (YouTube)",url:"https://www.youtube.com/results?search_query=thinking+fast+and+slow+summary+english"},
+      Friday:{label:"Secrets of the Millionaire Mind (YouTube)",url:"https://www.youtube.com/results?search_query=secrets+of+the+millionaire+mind+summary+english"},
+      Saturday:{label:"Self-Growth / Productivity (YouTube)",url:"https://www.youtube.com/results?search_query=self+improvement+podcast+english"},
+      Sunday:{label:"AI & Money (YouTube)",url:"https://www.youtube.com/results?search_query=ai+and+money+podcast"}
+    };
+    const AI_VIDEO={
+      Monday:{label:"AI News & Tools",url:"https://www.youtube.com/@mattvidpro"},
+      Tuesday:{label:"Data Science",url:"https://www.youtube.com/@KenJee1"},
+      Wednesday:{label:"AI Tools Roundups",url:"https://www.youtube.com/@FutureTools"},
+      Thursday:{label:"Automation (Make)",url:"https://www.youtube.com/@MakeHQ"},
+      Friday:{label:"AI Agents",url:"https://www.youtube.com/@aiexplained-official"},
+      Saturday:{label:"Machine Learning",url:"https://www.youtube.com/@3blue1brown"},
+      Sunday:{label:"Tech & AI Stories",url:"https://www.youtube.com/@ColdFusion"}
+    };
+
+    // ===== Quiz Bank (50) =====
+    const SHARED_QUIZ=[
+      // 25 Phrasal Verbs
+      {q:"What does 'give up' mean?",a:"Surrender",b:"Continue",correct:"a",example:"He decided to give up smoking after 10 years."},
+      {q:"What does 'pick up' mean?",a:"Collect",b:"Drop",correct:"a",example:"Can you pick up the kids from school today?"},
+      {q:"What does 'run out of' mean?",a:"Exhaust supply",b:"Replenish",correct:"a",example:"We ran out of coffee, so I'll buy more."},
+      {q:"What does 'find out' mean?",a:"Discover",b:"Forget",correct:"a",example:"I just found out the meeting was moved."},
+      {q:"What does 'look up' mean?",a:"Search for information",b:"Ignore",correct:"a",example:"Look up the word in the dictionary."},
+      {q:"What does 'turn on' mean?",a:"Start a device",b:"Break a device",correct:"a",example:"Please turn on the lights."},
+      {q:"What does 'turn off' mean?",a:"Stop a device",b:"Fix a device",correct:"a",example:"Don't forget to turn off the oven."},
+      {q:"What does 'put off' mean?",a:"Postpone",b:"Advance",correct:"a",example:"We had to put off the trip until June."},
+      {q:"What does 'put on' mean?",a:"Wear",b:"Take off",correct:"a",example:"Put on a jacket, it's cold."},
+      {q:"What does 'take off' mean?",a:"Remove or depart",b:"Arrive",correct:"a",example:"The plane takes off at 9 am."},
+      {q:"What does 'bring up' mean?",a:"Mention a topic",b:"Hide a topic",correct:"a",example:"She brought up an interesting point."},
+      {q:"What does 'come across' mean?",a:"Find by chance",b:"Lose",correct:"a",example:"I came across an old photo yesterday."},
+      {q:"What does 'work out' mean?",a:"Exercise/solve",b:"Complicate",correct:"a",example:"We can work out the details later."},
+      {q:"What does 'set up' mean?",a:"Arrange/establish",b:"Cancel",correct:"a",example:"Let's set up a call for tomorrow."},
+      {q:"What does 'break down' mean?",a:"Stop functioning",b:"Speed up",correct:"a",example:"My car broke down on the highway."},
+      {q:"What does 'carry on' mean?",a:"Continue",b:"Quit",correct:"a",example:"Carry on with the exercise, please."},
+      {q:"What does 'get along (with)' mean?",a:"Have a good relationship",b:"Argue",correct:"a",example:"Do you get along with your coworkers?"},
+      {q:"What does 'look after' mean?",a:"Take care of",b:"Ignore",correct:"a",example:"I'll look after the kids tonight."},
+      {q:"What does 'take up' mean?",a:"Start a hobby",b:"Abandon a hobby",correct:"a",example:"I took up yoga last year."},
+      {q:"What does 'figure out' mean?",a:"Solve/understand",b:"Confuse",correct:"a",example:"Can you figure out this error?"},
+      {q:"What does 'go on' mean?",a:"Continue/happen",b:"Stop",correct:"a",example:"Please go on, I'm listening."},
+      {q:"What does 'catch up' mean?",a:"Reach the same level",b:"Fall behind",correct:"a",example:"I need to catch up on emails."},
+      {q:"What does 'point out' mean?",a:"Indicate",b:"Hide",correct:"a",example:"He pointed out a typo in the report."},
+      {q:"What does 'cut down on' mean?",a:"Reduce",b:"Increase",correct:"a",example:"I'm cutting down on sugar this month."},
+      {q:"What does 'fall apart' mean?",a:"Break into pieces",b:"Come together",correct:"a",example:"The old book is falling apart."},
+      // 25 False Friends
+      {q:"False friend: 'actual' means…",a:"Current",b:"Real",correct:"a",example:"Our actual budget is smaller this year (meaning: current)."},
+      {q:"False friend: 'sensible' means…",a:"Practical/reasonable",b:"Sensitive",correct:"a",example:"That's a sensible decision given the data."},
+      {q:"False friend: 'sensitive' means…",a:"Easily affected",b:"Sensible/practical",correct:"a",example:"He's sensitive to criticism."},
+      {q:"False friend: 'assist' means…",a:"Help",b:"Attend",correct:"a",example:"Can you assist me with this task?"},
+      {q:"False friend: 'attend' means…",a:"Go to (be present)",b:"Assist",correct:"a",example:"She will attend the conference."},
+      {q:"False friend: 'constipated' means…",a:"Unable to pass stool",b:"Have a cold",correct:"a",example:"He felt constipated after the trip."},
+      {q:"False friend: 'fabric' means…",a:"Cloth/material",b:"Factory",correct:"a",example:"The dress is made of a soft fabric."},
+      {q:"False friend: 'library' means…",a:"Public book collection",b:"Bookstore",correct:"a",example:"I studied at the library all afternoon."},
+      {q:"False friend: 'carpet' means…",a:"Floor covering",b:"Folder",correct:"a",example:"They replaced the carpet in the office."},
+      {q:"False friend: 'embarrassed' means…",a:"Ashamed",b:"Pregnant",correct:"a",example:"I felt embarrassed after the mistake."},
+      {q:"False friend: 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"The exit is on your left."},
+      {q:"False friend: 'rope' means…",a:"Thick cord",b:"Clothes",correct:"a",example:"Tie it with a rope."},
+      {q:"False friend: 'realize' means…",a:"Become aware",b:"Achieve",correct:"a",example:"I didn't realize it was so late."},
+      {q:"False friend: 'actually' means…",a:"In fact",b:"Currently",correct:"a",example:"I actually like working with data."},
+      {q:"False friend: 'eventually' means…",a:"In the end",b:"Possibly",correct:"a",example:"We eventually solved the bug."},
+      {q:"False friend: 'advertise' means…",a:"Promote",b:"Warn",correct:"a",example:"They advertise their product online."},
+      {q:"False friend: 'notice' means…",a:"Observe/announcement",b:"Realize",correct:"a",example:"Did you notice the new layout?"},
+      {q:"False friend: 'pretend' means…",a:"Act as if",b:"Intend",correct:"a",example:"He pretended to be asleep."},
+      {q:"False friend: 'resume' means…",a:"CV/résumé",b:"Summary",correct:"a",example:"Please email your resume to HR."},
+      {q:"False friend: 'support' means…",a:"Help/back up",b:"Tolerate",correct:"a",example:"We support open-source projects."},
+      {q:"False friend: 'argument' means…",a:"Disagreement",b:"Plot/argumento",correct:"a",example:"They had an argument about money."},
+      {q:"False friend: 'record' means…",a:"Write down/register",b:"Remember",correct:"a",example:"Record your expenses daily."},
+      {q:"False friend: 'deception' means…",a:"Trickery/cheating",b:"Disappointment",correct:"a",example:"It was a clear case of deception."},
+      {q:"False friend: 'discussion' means…",a:"Conversation/debate",b:"Fight",correct:"a",example:"We had a productive discussion."},
+      {q:"False friend: 'exit' vs 'éxito' — 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"Use the emergency exit if needed."}
+    ];
+
+    // Build QUIZ map defensively
+    const QUIZ=(()=>{const map={};DAYS.forEach(d=>map[d]=SHARED_QUIZ);return map;})();
+    const getQuizList=(day)=> (QUIZ && Array.isArray(QUIZ[day]))? QUIZ[day] : SHARED_QUIZ;
+
+    // ===== State =====
+    let state=loadState();
+    if(!state||typeof state!=='object') state={quizScores:{},histories:{}};
+
+    // ===== Render =====
     function render(){
       const grid=document.getElementById('grid');
       grid.innerHTML='';
       const today=new Date().toLocaleDateString('en-US',{weekday:'long'});
-      ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].forEach(day=>{
+      DAYS.forEach(day=>{
         const template=document.getElementById('dayTemplate');
         const card=template.content.firstElementChild.cloneNode(true);
         card.dataset.day=day;
         card.querySelector('h3').textContent=day;
-
-        if(day===today){card.classList.add('today');}
+        if(day===today) card.classList.add('today');
 
         // Reading
         card.querySelector('.reading-summary').textContent="English blogs about making money with AI.";
         const linksWrap=card.querySelector('.reading-links');
-        const links=[
+        [
           {label:"RightBlogger",url:"https://rightblogger.com/blog/make-money-ai"},
           {label:"Medium (YouTube Automation)",url:"https://medium.com/@hazelparadise/7-ways-i-am-making-money-from-youtube-automation-839efac45bb5"},
           {label:"PlainEnglish (12 AI Tools)",url:"https://ai.plainenglish.io/i-tested-12-ai-tools-to-earn-money-online-heres-the-one-that-surprised-me-most-68c4e4eba576"},
           {label:"GoDaddy Blog",url:"https://www.godaddy.com/resources/skills/how-to-make-money-with-ai"}
-        ];
-        links.forEach(lk=>{
-          const a=document.createElement('a');a.href=lk.url;a.textContent=lk.label;a.target='_blank';linksWrap.appendChild(a);
-        });
+        ].forEach(lk=>{ const a=document.createElement('a'); a.href=lk.url; a.textContent=lk.label; a.target='_blank'; linksWrap.appendChild(a); });
 
-        // Tasks (per-day specific)
+        // Tasks per day
         const tasksWrap=card.querySelector('.tasks');
-        const podcast = PODCAST_YT[day];
-        const ai = AI_VIDEO[day];
-        const tasks=[
+        const podcast=PODCAST_YT[day];
+        const ai=AI_VIDEO[day];
+        [
           {title:"🎬 Series",kind:"Listening",url:"https://www.netflix.com"},
           {title:`🎧 Podcast: ${podcast.label}`,kind:"Podcast",url:podcast.url},
           {title:`🎥 YouTube: ${ai.label}`,kind:"YouTube",url:ai.url},
           {title:"🗣️ Speaking with ChatGPT (Voice)",kind:"Speaking",url:"https://chat.openai.com"}
-        ];
-        tasks.forEach(task=>{
-          const taskTemplate=document.getElementById('taskTemplate');
-          const taskNode=taskTemplate.content.firstElementChild.cloneNode(true);
-          taskNode.querySelector('.title').textContent=task.title;
-          taskNode.querySelector('.kind').textContent=task.kind;
-          taskNode.querySelector('.link').href=task.url;
-          tasksWrap.appendChild(taskNode);
+        ].forEach(task=>{
+          const t=document.getElementById('taskTemplate').content.firstElementChild.cloneNode(true);
+          t.querySelector('.title').textContent=task.title;
+          t.querySelector('.kind').textContent=task.kind;
+          t.querySelector('.link').href=task.url;
+          tasksWrap.appendChild(t);
         });
 
         // Quiz button
         card.querySelector('[data-open-quiz]').onclick=()=>openQuiz(day);
-
-        // Historial
         renderHistory(day,card);
-
         grid.appendChild(card);
       });
+      updateOverall();
     }
 
+    // ===== Quiz Modal =====
     function openQuiz(day){
-      const list=QUIZ[day]||[];
+      const list=getQuizList(day);
       if(!list.length) return;
-      let qIndex=0;let correct=0;let order=[...Array(list.length).keys()];
+      let qIndex=0, correct=0, order=shuffleArray([...Array(list.length).keys()]);
       const modal=document.getElementById('quizModal');
       const qEl=document.getElementById('quizQuestion');
       const optA=document.getElementById('optA');
@@ -259,61 +261,98 @@ const SHARED_QUIZ=[
       const nextBtn=document.getElementById('nextQuiz');
       const scoreNow=document.getElementById('scoreNow');
       const scoreTotal=document.getElementById('scoreTotal');
-      modal.classList.add('open');
-      scoreTotal.textContent = order.length;
-      scoreNow.textContent = correct;
+
+      // current mapping for this question
+      let currentQ=null; // the question object
+      let leftKey=null;  // 'a' or 'b'
+      let rightKey=null; // 'a' or 'b'
+
+      function clearBtnClasses(){ optA.classList.remove('correct','wrong'); optB.classList.remove('correct','wrong'); }
+
+      function setOptions(q){
+        // Randomize which key goes to the left
+        if(Math.random()>0.5){
+          optA.textContent=q.a; leftKey='a';
+          optB.textContent=q.b; rightKey='b';
+        } else {
+          optA.textContent=q.b; leftKey='b';
+          optB.textContent=q.a; rightKey='a';
+        }
+      }
 
       function showQ(){
+        clearBtnClasses();
         if(qIndex>=order.length){
           feedback.textContent=`Done! ${correct}/${order.length}`;
           state.quizScores[day]={correct,total:order.length};
           saveState(state);
-          document.querySelector(`[data-day="${day}"] [data-quiz-info]`).textContent=`${correct}/${order.length}`;
+          const badge=document.querySelector(`[data-day="${day}"] [data-quiz-info]`);
+          if(badge) badge.textContent=`${correct}/${order.length}`;
+          updateOverall();
           return;
         }
-        const q=list[order[qIndex]];
-        qEl.textContent=q.q;
-        optA.textContent=q.a;optA.dataset.val='a';
-        optB.textContent=q.b;optB.dataset.val='b';
+        currentQ=list[order[qIndex]];
+        qEl.textContent=currentQ.q;
+        setOptions(currentQ);
         feedback.textContent='';
-        // update live score display
-        scoreNow.textContent = correct;
-        scoreTotal.textContent = order.length;
+        scoreNow.textContent=correct;
+        scoreTotal.textContent=order.length;
       }
 
-      function choose(val){
-        const q=list[order[qIndex]];
-        if(val===q.correct){correct++;feedback.textContent='✅ Correct. '+q.example; scoreNow.textContent = correct;}
-        else{feedback.textContent='❌ Not quite. '+q.example;}
+      function choose(side){
+        const chosenBtn = side==='A'? optA : optB;
+        const correctKey = currentQ.correct; // 'a' or 'b'
+        const selectedKey = side==='A'? leftKey : rightKey; // which key user chose
+        const correctBtn = (correctKey===leftKey) ? optA : optB;
+
+        if(selectedKey===correctKey){
+          correct++;
+          feedback.textContent='✅ Correct. '+currentQ.example;
+          scoreNow.textContent=correct;
+          chosenBtn.classList.add('correct');
+        } else {
+          feedback.textContent='❌ Not quite. '+currentQ.example;
+          chosenBtn.classList.add('wrong');
+          correctBtn.classList.add('correct');
+        }
+
+        // Save history
         state.histories[day]=state.histories[day]||[];
         state.histories[day].push(feedback.textContent);
         saveState(state);
-        renderHistory(day,document.querySelector(`[data-day="${day}"]`));
+        renderHistory(day, document.querySelector(`[data-day="${day}"]`));
+
+        // After short delay, clear colors and reshuffle positions for SAME question
+        setTimeout(()=>{ clearBtnClasses(); setOptions(currentQ); },700);
       }
 
-      function next(){
-        qIndex++;
-        showQ();
-      }
-
-      optA.onclick=()=>choose('a');
-      optB.onclick=()=>choose('b');
-      nextBtn.onclick=()=>next();
+      optA.onclick=()=>choose('A');
+      optB.onclick=()=>choose('B');
+      nextBtn.onclick=()=>{ qIndex++; showQ(); };
       closeBtn.onclick=()=>modal.classList.remove('open');
-      shuffleBtn.onclick=()=>{order.sort(()=>Math.random()-0.5);qIndex=0;correct=0;showQ();};
+      shuffleBtn.onclick=()=>{ order=shuffleArray(order); qIndex=0; correct=0; scoreNow.textContent=0; clearBtnClasses(); showQ(); };
 
+      modal.classList.add('open');
+      scoreTotal.textContent=order.length;
+      scoreNow.textContent=correct;
       showQ();
     }
 
-    function renderHistory(day,card){
-      const histDiv=card.querySelector('[data-history]');
-      histDiv.innerHTML='';
-      (state.histories?.[day]||[]).forEach(entry=>{
-        const p=document.createElement('div');
-        p.textContent=entry;
-        histDiv.appendChild(p);
-      });
-    }
+    function renderHistory(day,card){ const histDiv=card.querySelector('[data-history]'); histDiv.innerHTML=''; (state.histories?.[day]||[]).forEach(entry=>{ const p=document.createElement('div'); p.textContent=entry; histDiv.appendChild(p); }); }
+
+    function updateOverall(){ const scoreMap=state.quizScores||{}; const days=Object.keys(scoreMap).length||1; let sumPct=0; for(const d in scoreMap){ const {correct,total}=scoreMap[d]; if(total>0) sumPct+=(100*correct/total); } const avg=days?Math.round(sumPct/days):0; document.getElementById('overallProgress').value=avg; document.getElementById('overallPct').textContent=`${avg}%`; }
+
+    // ===== Toolbar & Init =====
+    document.getElementById('resetBtn').onclick=()=>{ localStorage.removeItem('planner_state'); state={quizScores:{},histories:{}}; render(); };
+    document.getElementById('completeTodayBtn').onclick=()=>{ const today=new Date().toLocaleDateString('en-US',{weekday:'long'}); state.quizScores[today]=state.quizScores[today]||{correct:0,total:0}; saveState(state); render(); };
+
+    // Basic self-tests in console to prevent regressions
+    (function tests(){
+      console.assert(Array.isArray(SHARED_QUIZ)&&SHARED_QUIZ.length>=50,'SHARED_QUIZ >= 50');
+      console.assert(typeof getQuizList==='function' && Array.isArray(getQuizList('Wednesday')),'getQuizList works');
+      const probe={q:'X',a:'A1',b:'B1',correct:'a',example:'E'}; let lk=null,rk=null; // check mapping
+      (function(){ let left,right; if(Math.random()>0.5){left='a';right='b';} else {left='b';right='a';} lk=left; rk=right; })();
+    })();
 
     render();
   </script>

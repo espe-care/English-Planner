@@ -69,6 +69,7 @@
         <button id="optB">B</button>
       </div>
       <div class="quiz-extra">
+        <div id="scoreBox">✅ Correct: <span id="scoreNow">0</span>/<span id="scoreTotal">0</span></div>
         <button id="shuffleQuiz">🔀 Shuffle Questions</button>
         <button id="nextQuiz">➡️ Next</button>
       </div>
@@ -128,13 +129,60 @@
     };
 
 const SHARED_QUIZ=[
-      {q:"What does 'give up' mean?",a:"Surrender",b:"Continue",correct:"a",example:"He decided to give up smoking after 10 years."},
-      {q:"What does 'pick up' mean?",a:"Collect",b:"Drop",correct:"a",example:"Can you pick up the kids from school today?"},
-      {q:"False friend: 'Actual' means…",a:"Current",b:"Real",correct:"a",example:"The actual price is higher than expected."},
-      {q:"What does 'run out of' mean?",a:"Exhaust supply",b:"Replenish",correct:"a",example:"We ran out of milk this morning."},
-      {q:"False friend: 'Library' means…",a:"Bookstore",b:"Public book collection",correct:"b",example:"I borrowed three books from the library."}
-      // ... más preguntas con sus ejemplos
-    ];
+  // --- 25 Phrasal Verbs ---
+  {q:"What does 'give up' mean?",a:"Surrender",b:"Continue",correct:"a",example:"He decided to give up smoking after 10 years."},
+  {q:"What does 'pick up' mean?",a:"Collect",b:"Drop",correct:"a",example:"Can you pick up the kids from school today?"},
+  {q:"What does 'run out of' mean?",a:"Exhaust supply",b:"Replenish",correct:"a",example:"We ran out of coffee, so I'll buy more."},
+  {q:"What does 'find out' mean?",a:"Discover",b:"Forget",correct:"a",example:"I just found out the meeting was moved."},
+  {q:"What does 'look up' mean?",a:"Search for information",b:"Ignore",correct:"a",example:"Look up the word in the dictionary."},
+  {q:"What does 'turn on' mean?",a:"Start a device",b:"Break a device",correct:"a",example:"Please turn on the lights."},
+  {q:"What does 'turn off' mean?",a:"Stop a device",b:"Fix a device",correct:"a",example:"Don't forget to turn off the oven."},
+  {q:"What does 'put off' mean?",a:"Postpone",b:"Advance",correct:"a",example:"We had to put off the trip until June."},
+  {q:"What does 'put on' mean?",a:"Wear",b:"Take off",correct:"a",example:"Put on a jacket, it's cold."},
+  {q:"What does 'take off' mean?",a:"Remove or depart",b:"Arrive",correct:"a",example:"The plane takes off at 9 am."},
+  {q:"What does 'bring up' mean?",a:"Mention a topic",b:"Hide a topic",correct:"a",example:"She brought up an interesting point."},
+  {q:"What does 'come across' mean?",a:"Find by chance",b:"Lose",correct:"a",example:"I came across an old photo yesterday."},
+  {q:"What does 'work out' mean?",a:"Exercise/solve",b:"Complicate",correct:"a",example:"We can work out the details later."},
+  {q:"What does 'set up' mean?",a:"Arrange/establish",b:"Cancel",correct:"a",example:"Let's set up a call for tomorrow."},
+  {q:"What does 'break down' mean?",a:"Stop functioning",b:"Speed up",correct:"a",example:"My car broke down on the highway."},
+  {q:"What does 'carry on' mean?",a:"Continue",b:"Quit",correct:"a",example:"Carry on with the exercise, please."},
+  {q:"What does 'get along (with)' mean?",a:"Have a good relationship",b:"Argue",correct:"a",example:"Do you get along with your coworkers?"},
+  {q:"What does 'look after' mean?",a:"Take care of",b:"Ignore",correct:"a",example:"I'll look after the kids tonight."},
+  {q:"What does 'take up' mean?",a:"Start a hobby",b:"Abandon a hobby",correct:"a",example:"I took up yoga last year."},
+  {q:"What does 'figure out' mean?",a:"Solve/understand",b:"Confuse",correct:"a",example:"Can you figure out this error?"},
+  {q:"What does 'go on' mean?",a:"Continue/happen",b:"Stop",correct:"a",example:"Please go on, I'm listening."},
+  {q:"What does 'catch up' mean?",a:"Reach the same level",b:"Fall behind",correct:"a",example:"I need to catch up on emails."},
+  {q:"What does 'point out' mean?",a:"Indicate",b:"Hide",correct:"a",example:"He pointed out a typo in the report."},
+  {q:"What does 'cut down on' mean?",a:"Reduce",b:"Increase",correct:"a",example:"I'm cutting down on sugar this month."},
+  {q:"What does 'fall apart' mean?",a:"Break into pieces",b:"Come together",correct:"a",example:"The old book is falling apart."},
+
+  // --- 25 False Friends ---
+  {q:"False friend: 'actual' means…",a:"Current",b:"Real",correct:"a",example:"Our actual budget is smaller this year (meaning: current)."},
+  {q:"False friend: 'sensible' means…",a:"Practical/reasonable",b:"Sensitive",correct:"a",example:"That's a sensible decision given the data."},
+  {q:"False friend: 'sensitive' means…",a:"Easily affected",b:"Sensible/practical",correct:"a",example:"He's sensitive to criticism."},
+  {q:"False friend: 'assist' means…",a:"Help",b:"Attend",correct:"a",example:"Can you assist me with this task?"},
+  {q:"False friend: 'attend' means…",a:"Go to (be present)",b:"Assist",correct:"a",example:"She will attend the conference."},
+  {q:"False friend: 'constipated' means…",a:"Unable to pass stool",b:"Have a cold",correct:"a",example:"He felt constipated after the trip."},
+  {q:"False friend: 'fabric' means…",a:"Cloth/material",b:"Factory",correct:"a",example:"The dress is made of a soft fabric."},
+  {q:"False friend: 'library' means…",a:"Public book collection",b:"Bookstore",correct:"a",example:"I studied at the library all afternoon."},
+  {q:"False friend: 'carpet' means…",a:"Floor covering",b:"Folder",correct:"a",example:"They replaced the carpet in the office."},
+  {q:"False friend: 'embarrassed' means…",a:"Ashamed",b:"Pregnant",correct:"a",example:"I felt embarrassed after the mistake."},
+  {q:"False friend: 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"The exit is on your left."},
+  {q:"False friend: 'rope' means…",a:"Thick cord",b:"Clothes",correct:"a",example:"Tie it with a rope."},
+  {q:"False friend: 'realize' means…",a:"Become aware",b:"Achieve",correct:"a",example:"I didn't realize it was so late."},
+  {q:"False friend: 'actually' means…",a:"In fact",b:"Currently",correct:"a",example:"I actually like working with data."},
+  {q:"False friend: 'eventually' means…",a:"In the end",b:"Possibly",correct:"a",example:"We eventually solved the bug."},
+  {q:"False friend: 'advertise' means…",a:"Promote",b:"Warn",correct:"a",example:"They advertise their product online."},
+  {q:"False friend: 'notice' means…",a:"Observe/announcement",b:"Realize",correct:"a",example:"Did you notice the new layout?"},
+  {q:"False friend: 'pretend' means…",a:"Act as if",b:"Intend",correct:"a",example:"He pretended to be asleep."},
+  {q:"False friend: 'resume' means…",a:"CV/résumé",b:"Summary",correct:"a",example:"Please email your resume to HR."},
+  {q:"False friend: 'support' means…",a:"Help/back up",b:"Tolerate",correct:"a",example:"We support open-source projects."},
+  {q:"False friend: 'argument' means…",a:"Disagreement",b:"Plot/argumento",correct:"a",example:"They had an argument about money."},
+  {q:"False friend: 'record' means…",a:"Write down/register",b:"Remember",correct:"a",example:"Record your expenses daily."},
+  {q:"False friend: 'deception' means…",a:"Trickery/cheating",b:"Disappointment",correct:"a",example:"It was a clear case of deception."},
+  {q:"False friend: 'discussion' means…",a:"Conversation/debate",b:"Fight",correct:"a",example:"We had a productive discussion."},
+  {q:"False friend: 'exit' vs 'éxito' — 'exit' means…",a:"Way out",b:"Success",correct:"a",example:"Use the emergency exit if needed."}
+];
 
     const QUIZ={Monday:SHARED_QUIZ,Tuesday:SHARED_QUIZ,Wednesday:SHARED_QUIZ,Thursday:SHARED_QUIZ,Friday:SHARED_QUIZ,Saturday:SHARED_QUIZ,Sunday:SHARED_QUIZ};
 
@@ -209,7 +257,11 @@ const SHARED_QUIZ=[
       const closeBtn=document.getElementById('closeQuiz');
       const shuffleBtn=document.getElementById('shuffleQuiz');
       const nextBtn=document.getElementById('nextQuiz');
+      const scoreNow=document.getElementById('scoreNow');
+      const scoreTotal=document.getElementById('scoreTotal');
       modal.classList.add('open');
+      scoreTotal.textContent = order.length;
+      scoreNow.textContent = correct;
 
       function showQ(){
         if(qIndex>=order.length){
@@ -224,11 +276,14 @@ const SHARED_QUIZ=[
         optA.textContent=q.a;optA.dataset.val='a';
         optB.textContent=q.b;optB.dataset.val='b';
         feedback.textContent='';
+        // update live score display
+        scoreNow.textContent = correct;
+        scoreTotal.textContent = order.length;
       }
 
       function choose(val){
         const q=list[order[qIndex]];
-        if(val===q.correct){correct++;feedback.textContent='✅ Correct. '+q.example;}
+        if(val===q.correct){correct++;feedback.textContent='✅ Correct. '+q.example; scoreNow.textContent = correct;}
         else{feedback.textContent='❌ Not quite. '+q.example;}
         state.histories[day]=state.histories[day]||[];
         state.histories[day].push(feedback.textContent);
